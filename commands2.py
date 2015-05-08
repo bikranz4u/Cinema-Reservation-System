@@ -1,6 +1,5 @@
 import sqlite3
 from matrix import Matrix
-import re
 db = sqlite3.connect("database.db")
 cursor = db.cursor()
 
@@ -41,6 +40,9 @@ class Commands:
             for movie in result:
                 print(movie)
 
+    def check_number_of_tickets(self):
+        pass
+
 
     def choose_seat(self):
         seat = input("Choose seat ")
@@ -48,34 +50,35 @@ class Commands:
         col = int(seat[3])
         Matrix.check_borders(row, col)
 
-
-
-
-
     def make_reservation(self):
         name = input("Choose name> ")
         number_tickets = int(input("Choose numbers of tickets> "))
-        print("Current movies: ")
-        self.show_movies()
+        Matrix.get_free_seats(number_tickets)
+        if Matrix.get_free_seats(number_tickets) == True:
+            print("Current movies: ")
+            self.show_movies()
 
-        id = int(input("Choose a movie> "))
-        self.show_movies_projections(id)
+            id = int(input("Choose a movie> "))
+            self.show_movies_projections(id)
 
-        projection = int(input("Choose a projection> "))
-        print("Available seats(marked with a dot): ")
-        Matrix.print_matrix()
-        self.choose_seat()
+            projection = int(input("Choose a projection> "))
+            print("Available seats(marked with a dot): ")
+            Matrix.print_matrix()
+            counter = 0
+            while counter < number_tickets:
+                if self.choose_seat():
+                    counter +=1
 
+        else:
+            self.exit()
 
-
-
+    def exit(self):
+        pass
 
 
 def main():
     c = Commands()
-    # c.show_movies()
-    #c.show_movies_projections(1, "2014-04-01")
-    c.make_reservation()
+
 
 if __name__ == '__main__':
     main()
